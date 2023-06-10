@@ -1,42 +1,54 @@
-import { useState } from 'react';
+import { Component } from 'react';
 import { nanoid } from 'nanoid';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
 import Filter from './Filter/Filter';
 
-export const App = () => {
-  const [contacts, setContacts] = useState([]);
-  const [filter, setFilter] = useState('');
+class App extends Component {
+  state = {
+    contacts: [],
+    filter: '',
+  };
 
-  const handleAddContact = (name, number) => {
+  handleAddContact = (name, number) => {
     const newContact = {
       id: nanoid(),
       name: name,
       number: number,
     };
-    setContacts([...contacts, newContact]);
+    this.setState((prevState) => ({
+      contacts: [...prevState.contacts, newContact],
+    }));
   };
 
-  const handleDeleteContact = (id) => {
-    setContacts(contacts.filter((contact) => contact.id !== id));
+  handleDeleteContact = (id) => {
+    this.setState((prevState) => ({
+      contacts: prevState.contacts.filter((contact) => contact.id !== id),
+    }));
   };
 
-  const handleFilterChange = (event) => {
-    setFilter(event.target.value);
+  handleFilterChange = (event) => {
+    this.setState({ filter: event.target.value });
   };
 
-  const filteredContacts = contacts.filter((contact) =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
+  render() {
+    const { contacts, filter } = this.state;
 
-  return (
-    <div style={{ maxWidth: '250px', padding: '20px' }}>
-      <h1 style={{ marginBottom: '20px' }}>Phonebook</h1>
-      <ContactForm contacts={contacts} onAddContact={handleAddContact} />
+    const filteredContacts = contacts.filter((contact) =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
 
-      <h2 style={{ marginTop: '40px' }}>Contacts</h2>
-      <Filter value={filter} onChange={handleFilterChange} />
-      <ContactList contacts={filteredContacts} onDeleteContact={handleDeleteContact} />
-    </div>
-  );
-};
+    return (
+      <div style={{ maxWidth: '250px', padding: '20px' }}>
+        <h1 style={{ marginBottom: '20px' }}>Phonebook</h1>
+        <ContactForm contacts={contacts} onAddContact={this.handleAddContact} />
+
+        <h2 style={{ marginTop: '40px' }}>Contacts</h2>
+        <Filter value={filter} onChange={this.handleFilterChange} />
+        <ContactList contacts={filteredContacts} onDeleteContact={this.handleDeleteContact} />
+      </div>
+    );
+  }
+}
+
+export default App;
