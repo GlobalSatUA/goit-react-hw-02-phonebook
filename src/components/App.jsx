@@ -3,24 +3,12 @@ import { nanoid } from 'nanoid';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
 import Filter from './Filter/Filter';
-import ls from 'local-storage';
 
 class App extends Component {
   state = {
     contacts: [],
     filter: '',
   };
-
-  componentDidMount() {
-    const storedContacts = ls.get('contacts');
-    if (storedContacts) {
-      this.setState({ contacts: storedContacts });
-    }
-  }
-
-  componentDidUpdate() {
-    ls.set('contacts', this.state.contacts);
-  }
 
   handleAddContact = (name, number) => {
     const newContact = {
